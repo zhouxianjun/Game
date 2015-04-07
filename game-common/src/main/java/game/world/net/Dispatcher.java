@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.protobuf.InvalidProtocolBufferException;
 import game.world.event.Event;
 import game.world.event.HandlerEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,18 +12,17 @@ import java.util.Map;
 
 /**
  * 游戏业务分发处理器
- * @author Leo.liao
+ * @author zhouxianjun
  */
+@Slf4j
 public class Dispatcher {
 
-	private final static Logger LOG = LoggerFactory.getLogger(Dispatcher.class);
-	
 	private final static Map<Integer, HandlerEvent> handlers = Maps.newConcurrentMap();
 	
 	public static void dispatch(final Event event){
 		final HandlerEvent handlerEvent = handlers.get(event.getCmd());
 		if(handlerEvent == null) {
-			LOG.info("收到没有处理事件的消息, 断开连接-[玩家 = {},cmd = 0x{}]", event.getUser(), Integer.toHexString(event.getCmd()));
+			log.info("收到没有处理事件的消息, 断开连接-[玩家 = {},cmd = 0x{}]", event.getUser(), Integer.toHexString(event.getCmd()));
             event.write(Packet.createGlobalExceptionPacket(SysErrorCode.CMD_NOT_EXIST));
             return;
 		}

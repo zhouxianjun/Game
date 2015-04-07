@@ -1,7 +1,7 @@
 package game.world.event;
 
-import com.sun.xml.internal.ws.api.message.Packet;
 import game.world.BasicUser;
+import game.world.net.Packet;
 import game.world.netty.codec.MessageWorker;
 import game.world.protobuf.ResultPro;
 import io.netty.channel.Channel;
@@ -44,7 +44,8 @@ public class MessageReceivedEvent implements Runnable, Event {
 
     @Override
     public void write(Packet packet) {
-
+        if (packet.getCmd())
+        channel.writeAndFlush(packet);
     }
 
     @Override
