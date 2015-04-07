@@ -45,26 +45,26 @@ public class Packet {
         return ret;
     }
 
-    public Packet createGlobalException(short cmd, int errorCode){
+    public static Packet createException(Short cmd, int errorCode, MessageLite body){
         ResultPro.Result.Builder result = ResultPro.Result.newBuilder();
         result.setCode(errorCode);
-        return new Packet(cmd, result.build(), null);
+        return new Packet(cmd, result.build(), body);
     }
 
-    public Packet createGlobalException(){
-        return createGlobalException(AppCmd.GLOBAL_EXC, ErrorCode.UNKNOWN_ERROR);
+    public static Packet createGlobalException(){
+        return createException(AppCmd.GLOBAL_EXC, ErrorCode.UNKNOWN_ERROR, null);
     }
 
-    public Packet createSuccess(short cmd, MessageLite body){
+    public static Packet createSuccess(short cmd, MessageLite body){
         return new Packet(cmd, null, body);
     }
 
-    public Packet createSuccess(MessageLite body){
+    public static Packet createSuccess(MessageLite body){
         return new Packet(null, null, body);
     }
 
-    public Packet createError(int errorCode, MessageLite body){
-        return new Packet(null, null, body);
+    public static Packet createError(int errorCode, MessageLite body){
+        return createException(null, errorCode, body);
     }
 
     public int calcSize(){

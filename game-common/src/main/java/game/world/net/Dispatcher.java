@@ -2,11 +2,10 @@ package game.world.net;
 
 import com.google.common.collect.Maps;
 import com.google.protobuf.InvalidProtocolBufferException;
+import game.world.WorldManager;
 import game.world.event.Event;
 import game.world.event.HandlerEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -23,7 +22,7 @@ public class Dispatcher {
 		final HandlerEvent handlerEvent = handlers.get(event.getCmd());
 		if(handlerEvent == null) {
 			log.info("收到没有处理事件的消息, 断开连接-[玩家 = {},cmd = 0x{}]", event.getUser(), Integer.toHexString(event.getCmd()));
-            event.write(Packet.createGlobalExceptionPacket(SysErrorCode.CMD_NOT_EXIST));
+            event.write(Packet.createGlobalException());
             return;
 		}
 		if(!handlerEvent.isAsync()) {
