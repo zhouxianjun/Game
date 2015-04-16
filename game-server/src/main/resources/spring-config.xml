@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util-3.0.xsd"
+       default-lazy-init="true">
+
+    <util:map id="config_params" key-type="java.lang.String">
+        <entry key="game_server_boss_thread" value="${filter.server.boss}"/>
+        <entry key="game_server_worker_thread" value="${filter.server.worker}"/>
+        <entry key="center_ip" value="${filter.center.ip}"/>
+        <entry key="center_port" value="${filter.center.port}"/>
+
+        <entry key="game_server_area" value="${filter.server.area}"/>
+        <entry key="game_server_probability" value="${filter.server.probability}"/>
+        <entry key="game_server_ip" value="${filter.server.ip}"/>
+        <entry key="game_server_port" value="${filter.server.port}"/>
+        <entry key="game_server_name" value="${filter.server.name}"/>
+        <entry key="game_server_version" value="${filter.server.version}"/>
+        <entry key="game_server_max" value="${filter.server.max}"/>
+    </util:map>
+</beans>

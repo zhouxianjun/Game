@@ -1,8 +1,7 @@
 package game.world.event;
 
-import game.world.BasicUser;
 import game.world.net.Packet;
-import game.world.netty.codec.MessageWorker;
+import game.world.netty.codec.Worker;
 import game.world.protobuf.ResultPro;
 import io.netty.channel.Channel;
 
@@ -12,7 +11,7 @@ import io.netty.channel.Channel;
  * @Description:
  * @date 2015/4/2 11:33
  */
-public interface Event {
+public interface Event<T> {
     /**
      * 请求开始时间
      * @return
@@ -28,7 +27,7 @@ public interface Event {
      * 请求的cmd
      * @return
      */
-    public int getCmd();
+    public short getCmd();
 
     /**
      * 状态
@@ -46,7 +45,7 @@ public interface Event {
      * 玩家
      * @return
      */
-    public BasicUser getUser();
+    public T getObject();
 
     /**
      * 维持的长连接管道
@@ -64,5 +63,5 @@ public interface Event {
      * 当前玩家的消息工作者
      * @return
      */
-    public MessageWorker getMessageWorker();
+    public Worker<T, ? extends ReceivedEvent> getWorker();
 }

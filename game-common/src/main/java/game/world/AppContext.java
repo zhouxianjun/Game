@@ -1,19 +1,10 @@
 package game.world;
 
-import cn.huizhi.network.Dispatcher;
-import cn.huizhi.network.command.Cmd;
-import cn.huizhi.network.event.HandlerEvent;
-import cn.huizhi.network.handler.Handler;
-import game.world.event.HandlerEvent;
-import game.world.handler.Handler;
-import game.world.net.Cmd;
-import game.world.net.Dispatcher;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class AppContext {
 
@@ -22,18 +13,7 @@ public class AppContext {
 	public AppContext(String[] paths) {
 		applicationContext = new ClassPathXmlApplicationContext(paths);
 	}
-	public void init() {
-		Map<String, Handler> handlerMap = applicationContext.getBeansOfType(Handler.class);
-		for(Entry<String, Handler> entry : handlerMap.entrySet()) {
-			Handler handler = entry.getValue();
-			Cmd cmd = handler.getClass().getAnnotation(Cmd.class);
-			if(cmd == null) continue;
-			int inCmd = cmd.in();
-			HandlerEvent event = HandlerEvent.newInstance(inCmd, cmd.async(), handler);
-			Dispatcher.register(inCmd, event);
-		}
-	}
-	@SuppressWarnings("unchecked")  
+	@SuppressWarnings("unchecked")
     public static <T> T getBeanByName(String name) {
         return (T) applicationContext.getBean(name);
     }
@@ -42,6 +22,9 @@ public class AppContext {
         Iterator<T> iterator = beanMap.values().iterator();
         return iterator.hasNext() ? iterator.next() : null;
     }
+	public static <T> Map<String, T> getBeansOfType(Class<T> beanClass){
+		return applicationContext.getBeansOfType(beanClass);
+	}
     public static <T> T getBean(String name, Class<T> requiredType) {
 		try {
 			T t = applicationContext.getBean(name, requiredType);
@@ -50,6 +33,10 @@ public class AppContext {
 			System.err.println(e.getMessage());
 		}
 		return null;
+	}
+
+	public static AbstractApplicationContext getApplicationContext(){
+		return applicationContext;
 	}
     
     public static void destroy() {

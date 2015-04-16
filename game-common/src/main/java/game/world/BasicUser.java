@@ -2,7 +2,7 @@ package game.world;
 
 import com.sun.xml.internal.ws.api.message.Packet;
 import game.world.listeners.UserStateListener;
-import game.world.netty.codec.MessageWorker;
+import game.world.netty.codec.Worker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class BasicUser {
      */
     public volatile long lastOfflineTime;
 
-    public volatile MessageWorker messageWorker;
+    public volatile Worker worker;
 
     /**
      * 给玩家发数据包
@@ -66,6 +66,7 @@ public class BasicUser {
     }
 
     public void offline() {
+        channel.close();
         stateChanged("offline");
     }
 
@@ -85,7 +86,7 @@ public class BasicUser {
         Iterator<UserStateListener> it = WorldManager.getUserStateListeners().iterator();
         while(it.hasNext()) {
             final UserStateListener listener = it.next();
-            messageWorker.executeTask(new Runnable() {
+            worker.executeTask(new Runnable() {
                 @Override
                 public void run() {
                     try {

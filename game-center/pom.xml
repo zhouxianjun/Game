@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>game-server</artifactId>
+    <artifactId>game-center</artifactId>
     <packaging>jar</packaging>
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -127,7 +127,7 @@
             </resource>
         </resources>
         <filters>
-            <filter>${project.basedir}/src/main/filter/${filters.env}.properties</filter>
+            <filter>${project.basedir}/src/main/resources/${filters.env}.properties</filter>
         </filters>
         <plugins>
             <plugin>
@@ -204,9 +204,9 @@
             </properties>
         </profile>
         <profile>
-            <id>product</id>
+            <id>release</id>
             <properties>
-                <filters.env>product</filters.env>
+                <filters.env>release</filters.env>
             </properties>
         </profile>
     </profiles>

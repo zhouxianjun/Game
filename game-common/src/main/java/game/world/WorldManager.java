@@ -26,14 +26,23 @@ public class WorldManager {
 
     private ConcurrentHashMap<Integer, BasicUser> onlineUserMap = new ConcurrentHashMap<Integer, BasicUser>();
 
-    private HashBiMap<String, Integer> biReconnectSessionMap = HashBiMap.create();
-
     public static final int CORE_NUM = Runtime.getRuntime().availableProcessors();
 
     public static final int GAME_THREAD_COUNT = getClosestPowerOf2(CORE_NUM);
     public static final int GAME_THREAD_COUNT_TO_MOD = GAME_THREAD_COUNT - 1;
 
     public static final int LOGIN_WORKER_NUM = 1;
+
+    /**
+     * 离线超时时间
+     */
+    public static final int OFF_LINE_TIMEOUT = 120000;
+
+    private static final WorldManager worldManager = new WorldManager();
+
+    public static WorldManager getInstance() {
+        return worldManager;
+    }
 
     public void init(){
         loginWorkers = new DisruptorEvent("LOGIN_WORKER_", LOGIN_WORKER_NUM, 1 << 16);
@@ -59,11 +68,7 @@ public class WorldManager {
                             || (user.lastOfflineTime > 0 && nowTime - user.lastOfflineTime > OFF_LINE_TIMEOUT)) {
                         it.remove();
                         log.info("定时任务从在线玩家列表移除玩家【 {}】", user);
-                        if(player.desk != null) {
-                            player.desk.recycleAi();
-                        }
-                        player.channel.close();
-                        biReconnectSessionMap.inverse().remove(player.id);
+                        user.offline();
                     }
                 }
             }
@@ -106,5 +111,34 @@ public class WorldManager {
 
     public void executeDBEvent(Runnable event) {
         dbWorkers.publish(event);
+    }
+
+    public DisruptorEvent getExecutorService(int id) {
+        return gameWorkers[id & GAME_THREAD_COUNT_TO_MOD];
+    }
+
+    public void stop(){
+       /* updateExec.shutdownNow();
+        onlineUserTask.shutdownNow();
+        aiSheduled.shutdownNow();
+        for (int i = 0; i < GAME_THREAD_COUNT; i++) {
+            gameWorkers[i].shutdown();
+        }
+
+        for(int i = 0; i < PK_WORKER_NUM; i ++) {
+            pkWorkers[i].shutdown();
+        }
+        for(int i = 0; i < MULTI_PK_WORKER_NUM; i ++) {
+            multiPkWorkers[i].shutdown();
+        }
+        for(ScheduledExecutorService scheduled : scheduledList) {
+            scheduled.shutdownNow();
+        }
+
+        dbWorkers.shutdown();
+        loginWorkers.shutdown();
+        HttpDispatcher.shutdown();
+        LogService.shutdown();*/
+        log.info("成功并优雅的停止了服务器......");
     }
 }

@@ -11,12 +11,7 @@ public @interface Cmd {
 	 * 请求消息包ID
 	 * @return
 	 */
-	int in();
-	/**
-	 * 请求回复消息包ID
-	 * @return
-	 */
-	int out() default 0;
+	short value();
 	/**
 	 * 是否异步
 	 * @return

@@ -1,8 +1,9 @@
 package game.world.utils;
 
-import java.util.Locale;
+import game.world.AppContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
-import com._try.spring.ApplicationContextHolder;
+import java.util.Locale;
 
 /**
  * 国际化资源信息
@@ -27,18 +28,19 @@ public class I18nUtil {
 	/**法国*/
 	public static final String fr_FR = "fr_FR";
 	public static String getMessage(String code, Object[] args, String defaultMessage,Locale locale) {
-		return ApplicationContextHolder.getApplicationContext().getMessage(code, args, defaultMessage, locale);
+		return AppContext.getApplicationContext().getMessage(code, args, defaultMessage, locale);
 	}
 	
 	public static String getMessage(String code, Object[] args, Locale locale) {
-		return ApplicationContextHolder.getApplicationContext().getMessage(code, args, null, locale);
+		return AppContext.getApplicationContext().getMessage(code, args, null, locale);
 	}
 	
 	public static String getMessage(String code, Locale locale) {
-		return ApplicationContextHolder.getApplicationContext().getMessage(code, null, null, locale);
+		AbstractApplicationContext applicationContext = AppContext.getApplicationContext();
+		return applicationContext == null ? null : applicationContext.getMessage(code, null, null, locale);
 	}
 	
 	public static String getMessage(String code, String defaultMessage, Locale locale) {
-		return ApplicationContextHolder.getApplicationContext().getMessage(code, null, defaultMessage, locale);
+		return AppContext.getApplicationContext().getMessage(code, null, defaultMessage, locale);
 	}
 }

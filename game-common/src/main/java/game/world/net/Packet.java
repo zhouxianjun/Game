@@ -55,6 +55,10 @@ public class Packet {
         return createException(AppCmd.GLOBAL_EXC, ErrorCode.UNKNOWN_ERROR, null);
     }
 
+    public static Packet createGlobalException(int errorCode){
+        return createException(AppCmd.GLOBAL_EXC, errorCode, null);
+    }
+
     public static Packet createSuccess(short cmd, MessageLite body){
         return new Packet(cmd, null, body);
     }
@@ -90,4 +94,6 @@ public class Packet {
             byteBuf.writeBytes(getBody().toByteArray());
         }
     }
+
+    public static final Packet PING = createSuccess(AppCmd.PING, null);
 }
