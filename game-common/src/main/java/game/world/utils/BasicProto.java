@@ -21,7 +21,7 @@ public class BasicProto {
             String name = method.getName();
             Class<?>[] parameterTypes = method.getParameterTypes();
             if (name.startsWith(SET) && parameterTypes.length == 1){
-                name = name.substring(2);
+                name = name.substring(3);
                 System.out.println(name);
                 try {
                     Method m = aClass.getMethod(GET + name);
@@ -41,8 +41,7 @@ public class BasicProto {
             String name = method.getName();
             Class<?>[] parameterTypes = method.getParameterTypes();
             if (name.startsWith(SET) && parameterTypes.length == 1){
-                name = name.substring(2);
-                System.out.println(name);
+                name = name.substring(3);
                 try {
                     Method m = c.getMethod(GET + name);
                     if (m.getReturnType().equals(parameterTypes[0])){
