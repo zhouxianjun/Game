@@ -69,17 +69,6 @@ public abstract class AbstractClient {
     }
 
     private void init(){
-        if (reconnect){
-            scheduled = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-
-                @Override
-                public Thread newThread(Runnable arg0) {
-                    Thread thread = new Thread(arg0);
-                    thread.setName(getName() + "_CLIENT_TASK");
-                    return thread;
-                }
-            });
-        }
         EventLoopGroup workerGroup = new NioEventLoopGroup(2,
                 DefaultThreadFactory.newThreadFactory(getName() + "[ip=" + ip + ",port=" + port + "]_THREAD_"));
 
@@ -109,6 +98,17 @@ public abstract class AbstractClient {
     }
 
     public void connect(){
+        if (reconnect && scheduled == null){
+            scheduled = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+
+                @Override
+                public Thread newThread(Runnable arg0) {
+                    Thread thread = new Thread(arg0);
+                    thread.setName(getName() + "_CLIENT_TASK");
+                    return thread;
+                }
+            });
+        }
         try {
             bootstrap.connect(ip, port).addListener(new ChannelFutureListener() {
 
@@ -128,6 +128,8 @@ public abstract class AbstractClient {
                                     connect();
                                 }
                             }, 3, TimeUnit.SECONDS);
+                        }else {
+                            log.warn("连接服务器【IP={},Port={}】失败!", ip, port);
                         }
                     }
                 }

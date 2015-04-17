@@ -1,4 +1,4 @@
-package game.server;
+package game.world.utils;
 
 /**
  * @author zhouxianjun(Gary)
@@ -8,4 +8,6 @@ package game.server;
  */
 public class MemcachedCacheVar {
     public static final String ALL_GAME_SERVER = "ALL_GAME_SERVER";
+
+    public static final int MAX_CACHE_SECOND = 60 * 60 * 24 * 30;
 }

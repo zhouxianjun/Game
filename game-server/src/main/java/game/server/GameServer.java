@@ -12,6 +12,7 @@ import game.server.codec.ServerEncoder;
 import game.world.handler.Handler;
 import game.world.net.Dispatcher;
 import game.world.netty.AbstractServer;
+import game.world.utils.MemcachedCacheVar;
 import game.world.utils.MemcachedUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -21,7 +22,6 @@ import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +42,7 @@ public class GameServer extends AbstractServer {
 
     public static void connectCenter(String ip, int port){
         centerClient = new CenterClient(ip, port, new CenterClientDecoderHandler(allCenterChannels), new CenterEncoder(), "中心服");
+        centerClient.setReconnect(true);
         centerClient.connect();
     }
 
@@ -59,7 +60,7 @@ public class GameServer extends AbstractServer {
             gameServer = new GameServer(config.getGameServerBossThread(), config.getGameServerWorkerThread());
             gameServer.start(server.getPort());
 
-            if (StringUtils.isBlank(config.getCenterIp()) && config.getCenterPort() != null){
+            if (StringUtils.isNotBlank(config.getCenterIp()) && config.getCenterPort() != null){
                 connectCenter(config.getCenterIp(), config.getCenterPort());
             }
 
@@ -69,14 +70,16 @@ public class GameServer extends AbstractServer {
             }
             Map<String, Server> serverMap = servers.get(server.getArea());
             if (serverMap == null){
-                Lists.newArrayList();
+                serverMap = Maps.newHashMap();
             }
             serverMap.put(server.getAddress(), server);
-            MemcachedUtil.set(MemcachedCacheVar.ALL_GAME_SERVER, 0, serverMap);
+            servers.put(server.getArea(), serverMap);
+            MemcachedUtil.set(MemcachedCacheVar.ALL_GAME_SERVER, 0, servers);
 
             log.info("启动服务器花费时间：{}ms", (System.currentTimeMillis() - startTime));
         }catch (Exception e){
             log.error("启动服务器失败!", e);
+            System.exit(0);
         }
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override

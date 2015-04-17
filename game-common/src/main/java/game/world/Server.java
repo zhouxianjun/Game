@@ -1,8 +1,14 @@
 package game.world;
 
+import com.google.protobuf.MessageLite;
+import game.world.utils.BasicProto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
 
 /**
  * @author zhouxianjun(Gary)
@@ -12,7 +18,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Getter
-public class Server {
+@NoArgsConstructor
+public class Server extends BasicProto implements Serializable {
     @Value("#{config_params['game_server_area']}")
     private int area;
 
@@ -34,9 +41,15 @@ public class Server {
     @Value("#{config_params['game_server_max']}")
     private int max;
 
+    @Setter
     private int cur;
 
+    @Setter
     private boolean online;
+
+    public Server(MessageLite proto){
+        parseProto(proto);
+    }
 
     public String getAddress(){
         return getIp() + ":" + getPort();

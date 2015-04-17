@@ -127,7 +127,7 @@
             </resource>
         </resources>
         <filters>
-            <filter>${project.basedir}/src/main/resources/${filters.env}.properties</filter>
+            <filter>${project.basedir}/src/main/filter/${filters.env}.properties</filter>
         </filters>
         <plugins>
             <plugin>

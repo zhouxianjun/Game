@@ -1,5 +1,7 @@
 package game.center;
 
+import game.center.codec.CenterDecoderHandler;
+import game.center.codec.CenterEncoder;
 import game.world.netty.AbstractServer;
 import io.netty.channel.ChannelHandler;
 
@@ -17,11 +19,16 @@ public class CenterServer extends AbstractServer {
 
     @Override
     protected ChannelHandler getDecoderHandler() {
-        return null;
+        return new CenterDecoderHandler(getAllChannels());
     }
 
     @Override
     protected ChannelHandler getEncoderHandler() {
-        return null;
+        return new CenterEncoder();
+    }
+
+    public static void main(String[] args) {
+        CenterServer centerServer = new CenterServer(1, 1);
+        centerServer.start(4000);
     }
 }
