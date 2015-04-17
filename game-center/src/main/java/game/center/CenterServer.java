@@ -2,6 +2,8 @@ package game.center;
 
 import game.center.codec.CenterDecoderHandler;
 import game.center.codec.CenterEncoder;
+import game.world.handler.Handler;
+import game.world.net.Dispatcher;
 import game.world.netty.AbstractServer;
 import io.netty.channel.ChannelHandler;
 
@@ -30,5 +32,6 @@ public class CenterServer extends AbstractServer {
     public static void main(String[] args) {
         CenterServer centerServer = new CenterServer(1, 1);
         centerServer.start(4000);
+        Cache.CENTER_EVENT_CMD = Dispatcher.getHandlers(Handler.class);
     }
 }
