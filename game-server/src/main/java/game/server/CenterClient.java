@@ -1,5 +1,7 @@
 package game.server;
 
+import game.world.AppContext;
+import game.world.Server;
 import game.world.net.AppCmd;
 import game.world.net.Packet;
 import game.world.netty.AbstractClient;
@@ -28,6 +30,7 @@ public class CenterClient extends AbstractClient {
     @Override
     protected void connected(Channel channel) {
         ServerPro.Server.Builder server = ServerPro.Server.newBuilder();
+        AppContext.getBean(Server.class).parseObject(server);
         channel.writeAndFlush(Packet.createSuccess(AppCmd.CENTER_CONNECT, server.build()));
     }
 }

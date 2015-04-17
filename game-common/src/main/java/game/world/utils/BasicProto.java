@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 public class BasicProto {
     private final String SET = "set";
     private final String GET = "get";
-    protected void parseProto(MessageLite proto){
+    public void parseProto(MessageLite proto){
         Class<? extends BasicProto> c = getClass();
         Class<? extends MessageLite> aClass = proto.getClass();
         Method[] methods = c.getDeclaredMethods();
@@ -27,6 +27,26 @@ public class BasicProto {
                     Method m = aClass.getMethod(GET + name);
                     if (m.getReturnType().equals(parameterTypes[0])){
                         method.invoke(this, m.invoke(proto));
+                    }
+                } catch (Exception e) {}
+            }
+        }
+    }
+
+    public void parseObject(MessageLite.Builder builder){
+        Class<? extends BasicProto> c = getClass();
+        Class<? extends MessageLite.Builder> aClass = builder.getClass();
+        Method[] methods = aClass.getDeclaredMethods();
+        for (Method method : methods) {
+            String name = method.getName();
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            if (name.startsWith(SET) && parameterTypes.length == 1){
+                name = name.substring(2);
+                System.out.println(name);
+                try {
+                    Method m = c.getMethod(GET + name);
+                    if (m.getReturnType().equals(parameterTypes[0])){
+                        method.invoke(builder, m.invoke(this));
                     }
                 } catch (Exception e) {}
             }
