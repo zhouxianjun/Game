@@ -53,8 +53,10 @@ public abstract class AbstractDecoderHandler<W extends Worker<T, ? extends Recei
             final short totalLength = buffer.readShort();
             //当前请求CMD
             final short cmd = buffer.readShort();
+            //消息RET 长度
+            final short retSize = buffer.readShort();
             //消息RET
-            final byte[] ret = new byte[totalLength - 2];
+            final byte[] ret = new byte[retSize];
             buffer.readBytes(ret);
             ResultPro.Result result;
             try {

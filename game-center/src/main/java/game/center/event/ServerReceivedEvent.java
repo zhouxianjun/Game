@@ -1,9 +1,8 @@
-package game.server.event;
+package game.center.event;
 
 import com.sun.tools.javac.util.Assert;
-import game.server.Cache;
-import game.world.AppContext;
-import game.world.BasicUser;
+import game.center.Cache;
+import game.world.Server;
 import game.world.WorldManager;
 import game.world.error.ErrorCode;
 import game.world.event.Event;
@@ -19,20 +18,19 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author zhouxianjun(Gary)
  * @ClassName:
- * @Description:
- * @date 2015/4/14 16:26
+ * @Description:接收处理服务器发来的CMD
+ * @date 2015/4/16 15:37
  */
 @Slf4j
-public class PlayerReceivedEvent extends ReceivedEvent<BasicUser> {
-
-    public PlayerReceivedEvent(int length, short cmd, BasicUser object, Channel channel, ResultPro.Result ret, Worker<BasicUser, PlayerReceivedEvent> worker, byte[] data) {
+public class ServerReceivedEvent extends ReceivedEvent<Server> {
+    public ServerReceivedEvent(int length, short cmd, Server object, Channel channel, ResultPro.Result ret, Worker<Server, ? extends ReceivedEvent> worker, byte[] data) {
         super(length, cmd, object, channel, ret, worker, data);
     }
 
     @Override
     public void run() {
-        Assert.checkNonNull(Cache.GAME_EVENT_CMD, "游戏事件处理Dispatcher未初始化!");
-        HandlerEvent<Handler> handlerEvent = Cache.GAME_EVENT_CMD.get(this.getCmd());
+        Assert.checkNonNull(Cache.CENTER_EVENT_CMD, "中心服事件处理Dispatcher未初始化!");
+        HandlerEvent<Handler> handlerEvent = Cache.CENTER_EVENT_CMD.get(this.getCmd());
         if(handlerEvent == null) {
             log.info("收到没有处理事件的消息, [玩家 = {},cmd = 0x{}]", this.getObject(), Integer.toHexString(this.getCmd()));
             //this.write(Packet.createGlobalException());

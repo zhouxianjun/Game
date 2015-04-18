@@ -7,15 +7,15 @@ import io.netty.channel.group.ChannelGroup;
 /**
  * @author zhouxianjun(Gary)
  * @ClassName:
- * @Description:
+ * @Description:接收服务器的解码
  * @date 2015/4/16 15:35
  */
-public class CenterDecoderHandler extends AbstractDecoderHandler<CenterWorker, Server> {
-    public CenterDecoderHandler(ChannelGroup channelGroup) {
+public class ServerDecoderHandler extends AbstractDecoderHandler<ServerWorker, Server> {
+    public ServerDecoderHandler(ChannelGroup channelGroup) {
         super(channelGroup);
     }
 
-    public CenterDecoderHandler(ChannelGroup channelGroup, int maxFrameLength, int lengthFieldOffset, int lengthFieldLength, int lengthAdjustment, int initialBytesToStrip) {
+    public ServerDecoderHandler(ChannelGroup channelGroup, int maxFrameLength, int lengthFieldOffset, int lengthFieldLength, int lengthAdjustment, int initialBytesToStrip) {
         super(channelGroup, maxFrameLength, lengthFieldOffset, lengthFieldLength, lengthAdjustment, initialBytesToStrip);
     }
 }

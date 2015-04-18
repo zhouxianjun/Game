@@ -1,6 +1,5 @@
 package game.world;
 
-import com.google.common.collect.HashBiMap;
 import game.world.disruptor.DisruptorEvent;
 import game.world.listeners.UserStateListener;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ import java.util.concurrent.*;
  */
 @Slf4j
 public class WorldManager {
-    private DisruptorEvent loginWorkers;
 
     private DisruptorEvent dbWorkers;
 
@@ -30,8 +28,6 @@ public class WorldManager {
 
     public static final int GAME_THREAD_COUNT = getClosestPowerOf2(CORE_NUM);
     public static final int GAME_THREAD_COUNT_TO_MOD = GAME_THREAD_COUNT - 1;
-
-    public static final int LOGIN_WORKER_NUM = 1;
 
     /**
      * 离线超时时间
@@ -45,7 +41,6 @@ public class WorldManager {
     }
 
     public void init(){
-        loginWorkers = new DisruptorEvent("LOGIN_WORKER_", LOGIN_WORKER_NUM, 1 << 16);
         // ------------- 初始化 db worker（执行DB操作） ----------------
         dbWorkers = new DisruptorEvent("DB_WORKER_", GAME_THREAD_COUNT * 2, 1 << 16);
 

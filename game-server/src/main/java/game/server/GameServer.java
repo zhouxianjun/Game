@@ -1,6 +1,5 @@
 package game.server;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import game.server.codec.CenterEncoder;
 import game.server.codec.CenterClientDecoderHandler;
@@ -8,7 +7,7 @@ import game.server.codec.PlayerClientDecoderHandler;
 import game.world.AppContext;
 import game.world.Server;
 import game.world.WorldManager;
-import game.server.codec.ServerEncoder;
+import game.server.codec.PlayerEncoder;
 import game.world.handler.Handler;
 import game.world.net.Dispatcher;
 import game.world.netty.AbstractServer;
@@ -109,6 +108,6 @@ public class GameServer extends AbstractServer {
 
     @Override
     protected ChannelHandler getEncoderHandler() {
-        return new ServerEncoder();
+        return new PlayerEncoder();
     }
 }

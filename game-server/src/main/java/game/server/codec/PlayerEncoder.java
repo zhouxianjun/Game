@@ -10,11 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author zhouxianjun(Gary)
  * @ClassName:
- * @Description:
+ * @Description: 发送给玩家的消息编码
  * @date 2015/4/13 14:34
  */
 @Slf4j
-public class ServerEncoder extends MessageToByteEncoder<Packet> {
+public class PlayerEncoder extends MessageToByteEncoder<Packet> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Packet msg, ByteBuf out) throws Exception {

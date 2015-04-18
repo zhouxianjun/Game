@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author zhouxianjun(Gary)
  * @ClassName:
- * @Description:
+ * @Description: 接收玩家客户端的消息解码
  * @date 2015/4/14 11:40
  */
 @Slf4j

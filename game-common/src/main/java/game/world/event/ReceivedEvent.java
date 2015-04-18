@@ -1,5 +1,8 @@
 package game.world.event;
 
+import game.world.WorldManager;
+import game.world.error.ErrorCode;
+import game.world.handler.Handler;
 import game.world.net.Packet;
 import game.world.netty.codec.Worker;
 import game.world.protobuf.ResultPro;
@@ -42,5 +45,30 @@ public abstract class ReceivedEvent<T> implements Runnable, Event<T> {
             packet.setCmd(cmd);
         channel.writeAndFlush(packet);
         log.debug("回复消息：IP:{}, 玩家:{}, CMD:0x{}, 耗时:{}毫秒", new Object[]{worker.ip, object, Integer.toHexString(cmd), System.currentTimeMillis() - startTime});
+    }
+
+    protected void handle(final HandlerEvent<Handler> handlerEvent){
+        if(!handlerEvent.isAsync()) {
+            handle(this, handlerEvent.getHandler());
+        } else {
+            WorldManager.getInstance().executeDBEvent(new Runnable() {
+                @Override
+                public void run() {
+                    handle(ReceivedEvent.this, handlerEvent.getHandler());
+                }
+            });
+        }
+    }
+    
+    protected void handle(Event event, Handler handler) {
+        try {
+            if(handler == null) {
+                event.write(Packet.createGlobalException(ErrorCode.NOT_FOUND));
+            }
+            handler.handle(event);
+        } catch(Exception e) {
+            event.write(Packet.createError(ErrorCode.UNKNOWN_ERROR, null));
+            log.error("Handler异常:", e);
+        }
     }
 }

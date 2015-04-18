@@ -11,7 +11,7 @@ import io.netty.channel.Channel;
 /**
  * @author zhouxianjun(Gary)
  * @ClassName:
- * @Description:
+ * @Description: 玩家客户端的消息woker
  * @date 2015/4/14 16:30
  */
 public class PlayerWorker extends Worker<BasicUser, PlayerReceivedEvent> {

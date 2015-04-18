@@ -72,10 +72,8 @@ public class Packet {
     }
 
     public int calcSize(){
-        int size = 2; //cmd
-        if (getRet() != null){
-            size += getRet().toByteArray().length;
-        }
+        int size = 3; //cmd
+        size += getRet().toByteArray().length;
         if(getBody() != null) {
             size += getBody().toByteArray().length;
         }
@@ -85,10 +83,8 @@ public class Packet {
     public void write(ByteBuf byteBuf){
         byteBuf.writeShort(calcSize()); //输出总长度
         byteBuf.writeShort(cmd); //命令
-
-        if(getRet() != null) {
-            byteBuf.writeBytes(getRet().toByteArray());
-        }
+        byteBuf.writeShort(getRet().toByteArray().length); //命令
+        byteBuf.writeBytes(getRet().toByteArray());
 
         if(getBody() != null) {
             byteBuf.writeBytes(getBody().toByteArray());

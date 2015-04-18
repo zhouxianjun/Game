@@ -19,7 +19,7 @@ import java.util.*;
 public class ErrorsUtil implements Errors {
 	public static ArrayList<String> errorsCodeClasses;
 	public static ArrayList<String> errorsDescClasses;
-	public static String basePackage;
+	public static String basePackage = "/";
 	protected static Map<Object, String> errors = null;
 	private static Map<String, Object> errorsCodeTemp = null;
 	private static Map<String, Object> errorsDescTemp = null;

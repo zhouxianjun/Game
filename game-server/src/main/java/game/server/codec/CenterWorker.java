@@ -1,6 +1,6 @@
-package game.center.codec;
+package game.server.codec;
 
-import game.center.event.CenterReceivedEvent;
+import game.server.event.CenterReceivedEvent;
 import game.world.Server;
 import game.world.netty.codec.Worker;
 import io.netty.channel.Channel;
@@ -8,8 +8,8 @@ import io.netty.channel.Channel;
 /**
  * @author zhouxianjun(Gary)
  * @ClassName:
- * @Description:
- * @date 2015/4/16 15:36
+ * @Description:中心服的消息处理worker
+ * @date 2015/4/18 13:36
  */
 public class CenterWorker extends Worker<Server, CenterReceivedEvent> {
     public CenterWorker(Channel channel) {

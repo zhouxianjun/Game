@@ -8,10 +8,10 @@ import io.netty.handler.codec.MessageToByteEncoder;
 /**
  * @author zhouxianjun(Gary)
  * @ClassName:
- * @Description:
+ * @Description:发送给服务器的编码
  * @date 2015/4/17 15:03
  */
-public class CenterEncoder extends MessageToByteEncoder<Packet> {
+public class ServerEncoder extends MessageToByteEncoder<Packet> {
     @Override
     protected void encode(ChannelHandlerContext ctx, Packet msg, ByteBuf out) throws Exception {
         msg.write(out);

@@ -2,6 +2,7 @@ package game.world;
 
 import com.google.protobuf.MessageLite;
 import game.world.utils.BasicProto;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +18,7 @@ import java.io.Serializable;
  * @date 2015/4/2 10:09
  */
 @Component
-@Getter
+@Data
 @NoArgsConstructor
 public class Server extends BasicProto implements Serializable {
     @Value("#{config_params['game_server_area']}")
@@ -41,10 +42,8 @@ public class Server extends BasicProto implements Serializable {
     @Value("#{config_params['game_server_max']}")
     private int max;
 
-    @Setter
     private int cur;
 
-    @Setter
     private boolean online;
 
     public Server(MessageLite proto){
