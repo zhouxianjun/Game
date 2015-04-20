@@ -6,6 +6,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -15,6 +17,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,28 +47,16 @@ public abstract class AbstractClient {
     protected Integer readTimeOut = 60;
     protected Integer writerTimeOut = 60;
     protected boolean stateChange = false;
-    protected ChannelHandler handler;
-    protected ChannelHandler encoder;
     private Bootstrap bootstrap;
     protected Channel channel;
     private ScheduledExecutorService scheduled;
+    private ChannelGroup allChannels;
 
-    public AbstractClient(String ip, int port, ChannelHandler handler, ChannelHandler encoder, String name) {
+    public AbstractClient(String ip, int port, String name) {
         this.ip = ip;
         this.port = port;
-        this.handler = handler;
-        this.encoder = encoder;
         this.name = name;
         init();
-    }
-
-    public AbstractClient(String ip, int port, ChannelHandler handler, String name) {
-        this(ip, port, handler, new MessageToByteEncoder<Packet>() {
-            @Override
-            protected void encode(ChannelHandlerContext ctx, Packet msg, ByteBuf out) throws Exception {
-                msg.write(out);
-            }
-        }, name);
     }
 
     private void init(){
@@ -85,7 +76,7 @@ public abstract class AbstractClient {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline channelPipeline = ch.pipeline();
-                            channelPipeline.addLast(handler).addLast(encoder);
+                            channelPipeline.addLast(getDecoderHandler()).addLast(getEncoderHandler());
                             if (stateChange){
                                 channelPipeline.addLast("idleStateHandler", new IdleStateHandler(readTimeOut, writerTimeOut, 0));
                             }
@@ -158,5 +149,21 @@ public abstract class AbstractClient {
             log.info("关闭与服务器【ip={}，port={}】的连接", ip, port);
             channel.close();
         }
+    }
+
+    protected ChannelGroup getAllChannels(){
+        if (allChannels == null){
+            allChannels = new DefaultChannelGroup(new DefaultEventExecutorGroup(1).next());
+        }
+        return allChannels;
+    }
+    protected abstract ChannelHandler getDecoderHandler();
+    protected ChannelHandler getEncoderHandler(){
+        return new MessageToByteEncoder<Packet>() {
+            @Override
+            protected void encode(ChannelHandlerContext ctx, Packet msg, ByteBuf out) throws Exception {
+                msg.write(out);
+            }
+        };
     }
 }

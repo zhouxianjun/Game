@@ -1,5 +1,7 @@
 package game.server;
 
+import game.server.codec.CenterClientDecoderHandler;
+import game.server.codec.CenterEncoder;
 import game.world.AppContext;
 import game.world.Server;
 import game.world.net.AppCmd;
@@ -10,6 +12,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.group.ChannelGroup;
 
 /**
  * @author zhouxianjun(Gary)
@@ -19,12 +22,8 @@ import io.netty.channel.ChannelHandler;
  */
 public class CenterClient extends AbstractClient {
 
-    public CenterClient(String ip, int port, ChannelHandler handler, ChannelHandler encoder, String name) {
-        super(ip, port, handler, encoder, name);
-    }
-
-    public CenterClient(String ip, int port, ChannelHandler handler, String name) {
-        super(ip, port, handler, name);
+    public CenterClient(String ip, int port, String name) {
+        super(ip, port, name);
     }
 
     @Override
@@ -32,5 +31,20 @@ public class CenterClient extends AbstractClient {
         ServerPro.Server.Builder server = ServerPro.Server.newBuilder();
         AppContext.getBean(Server.class).parseObject(server);
         channel.writeAndFlush(Packet.createSuccess(AppCmd.CENTER_CONNECT, server.build()));
+    }
+
+    @Override
+    protected ChannelHandler getDecoderHandler() {
+        return new CenterClientDecoderHandler(getAllChannels());
+    }
+
+    @Override
+    protected ChannelHandler getEncoderHandler() {
+        return new CenterEncoder();
+    }
+
+    @Override
+    protected ChannelGroup getAllChannels() {
+        return super.getAllChannels();
     }
 }

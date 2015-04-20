@@ -32,7 +32,6 @@ import java.util.Map;
 @Slf4j
 public class GameServer extends AbstractServer {
     private static GameServer gameServer;
-    private static ChannelGroup allCenterChannels = new DefaultChannelGroup(new DefaultEventExecutorGroup(1).next());
     private static CenterClient centerClient;
 
     public GameServer(int boss, int worker) {
@@ -43,7 +42,7 @@ public class GameServer extends AbstractServer {
         config = config == null ? AppContext.getBean(Config.class) : config;
         if (StringUtils.isNotBlank(config.getCenterIp()) && config.getCenterPort() != null){
             if (centerClient == null)
-                centerClient = new CenterClient(config.getCenterIp(), config.getCenterPort(), new CenterClientDecoderHandler(allCenterChannels), new CenterEncoder(), "中心服");
+                centerClient = new CenterClient(config.getCenterIp(), config.getCenterPort(), "中心服");
             centerClient.setReconnect(true);
             centerClient.connect();
         }
@@ -90,7 +89,7 @@ public class GameServer extends AbstractServer {
                     log.info("正在优雅的停止服务器.....");
                     ChannelGroupFuture future = gameServer.getAllChannels().close();
                     future.awaitUninterruptibly();// 阻塞，直到服务器关闭
-                    ChannelGroupFuture futureCenter = allCenterChannels.close();
+                    ChannelGroupFuture futureCenter = centerClient.getAllChannels().close();
                     futureCenter.awaitUninterruptibly();// 阻塞，直到服务器关闭
                 } catch (Exception e) {
                     log.error("停止服务器异常!", e);
