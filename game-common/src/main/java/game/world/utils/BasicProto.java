@@ -22,7 +22,6 @@ public class BasicProto {
             Class<?>[] parameterTypes = method.getParameterTypes();
             if (name.startsWith(SET) && parameterTypes.length == 1){
                 name = name.substring(3);
-                System.out.println(name);
                 try {
                     Method m = aClass.getMethod(GET + name);
                     if (m.getReturnType().equals(parameterTypes[0])){
