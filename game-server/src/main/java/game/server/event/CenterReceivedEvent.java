@@ -6,6 +6,7 @@ import game.world.Server;
 import game.world.event.HandlerEvent;
 import game.world.event.ReceivedEvent;
 import game.world.handler.Handler;
+import game.world.net.Packet;
 import game.world.netty.codec.Worker;
 import game.world.protobuf.ResultPro;
 import io.netty.channel.Channel;
@@ -29,7 +30,7 @@ public class CenterReceivedEvent extends ReceivedEvent<Server> {
         HandlerEvent<Handler> handlerEvent = Cache.GAME_EVENT_CMD.get(this.getCmd());
         if(handlerEvent == null) {
             log.info("收到没有处理事件的消息, [中心服 = {},cmd = 0x{}]", this.getObject(), Integer.toHexString(this.getCmd()));
-            //this.write(Packet.createGlobalException());
+            this.write(Packet.createGlobalException());
             return;
         }
         handle(handlerEvent);

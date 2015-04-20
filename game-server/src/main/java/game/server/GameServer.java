@@ -39,10 +39,14 @@ public class GameServer extends AbstractServer {
         super(boss, worker);
     }
 
-    public static void connectCenter(String ip, int port){
-        centerClient = new CenterClient(ip, port, new CenterClientDecoderHandler(allCenterChannels), new CenterEncoder(), "中心服");
-        centerClient.setReconnect(true);
-        centerClient.connect();
+    public static void connectCenter(Config config){
+        config = config == null ? AppContext.getBean(Config.class) : config;
+        if (StringUtils.isNotBlank(config.getCenterIp()) && config.getCenterPort() != null){
+            if (centerClient == null)
+                centerClient = new CenterClient(config.getCenterIp(), config.getCenterPort(), new CenterClientDecoderHandler(allCenterChannels), new CenterEncoder(), "中心服");
+            centerClient.setReconnect(true);
+            centerClient.connect();
+        }
     }
 
     public static void main(String[] args) {
@@ -59,9 +63,7 @@ public class GameServer extends AbstractServer {
             gameServer = new GameServer(config.getGameServerBossThread(), config.getGameServerWorkerThread());
             gameServer.start(server.getPort());
 
-            if (StringUtils.isNotBlank(config.getCenterIp()) && config.getCenterPort() != null){
-                connectCenter(config.getCenterIp(), config.getCenterPort());
-            }
+            connectCenter(config);
 
             Map<Integer, Map<String, Server>> servers = MemcachedUtil.get(MemcachedCacheVar.ALL_GAME_SERVER);
             if (servers == null){

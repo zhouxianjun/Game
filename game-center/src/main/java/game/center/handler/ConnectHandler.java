@@ -1,5 +1,6 @@
 package game.center.handler;
 
+import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import game.world.Server;
@@ -42,5 +43,6 @@ public class ConnectHandler implements Handler {
         servers.put(s.getArea(), serverMap);
         MemcachedUtil.set(MemcachedCacheVar.ALL_GAME_SERVER, 0, serverMap);
         log.info("{} 连上中心服务器!", s);
+        log.info("当前服务器:{}", JSONArray.toJSONString(MemcachedUtil.get(MemcachedCacheVar.ALL_GAME_SERVER)));
     }
 }

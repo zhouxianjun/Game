@@ -33,7 +33,7 @@ public class ServerReceivedEvent extends ReceivedEvent<Server> {
         HandlerEvent<Handler> handlerEvent = Cache.CENTER_EVENT_CMD.get(this.getCmd());
         if(handlerEvent == null) {
             log.info("收到没有处理事件的消息, [玩家 = {},cmd = 0x{}]", this.getObject(), Integer.toHexString(this.getCmd()));
-            //this.write(Packet.createGlobalException());
+            this.write(Packet.createGlobalException());
             return;
         }
         handle(handlerEvent);
